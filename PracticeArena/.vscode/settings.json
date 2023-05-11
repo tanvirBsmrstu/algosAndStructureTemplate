@@ -5,12 +5,15 @@
         "**/*.exe": true
     },
     "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
-    "editor.codeActionsOnSave": {
-    "source.fixAll": true
-    },
     "editor.defaultFormatter": "ms-vscode.cpptools-extension-pack",
     "editor.foldingImportsByDefault": true,
     "editor.inlayHints.fontSize": 0,
     "editor.mouseWheelZoom": true,
-    "editor.minimap.enabled": false
+    "editor.minimap.enabled": false,
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "code-runner.saveAllFilesBeforeRun": false,
+    "code-runner.saveFileBeforeRun": true,
+    "code-runner.clearPreviousOutput": true
 }
