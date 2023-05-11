@@ -11,5 +11,6 @@
     "editor.defaultFormatter": "ms-vscode.cpptools-extension-pack",
     "editor.foldingImportsByDefault": true,
     "editor.inlayHints.fontSize": 0,
-    "editor.mouseWheelZoom": true
+    "editor.mouseWheelZoom": true,
+    "editor.minimap.enabled": false
 }
