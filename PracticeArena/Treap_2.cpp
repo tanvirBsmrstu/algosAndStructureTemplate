@@ -162,11 +162,8 @@ public:
 
     void print(shared_ptr<TreapNode> node, int rootIndex = 1)
     {
-        if (!node)
-            return;
-        print(node->leftChild, rootIndex << 1);
-        cout << "index : " << rootIndex << " Tree : " << node->toString() << endl;
-        print(node->rightChild, (rootIndex << 1) + 1);
+
+        cout << printTree(node).str() << endl;
     }
 
     int find_kth_minimum_number_interval(int low, int high, int k)
@@ -225,18 +222,18 @@ public:
     }
     stack<vector<shared_ptr<TreapNode>>> treeDepthLevel;
     string unitPrefix = "       ";
-    stringstream pt(shared_ptr<TreapNode> node, int rootIndex = 1, bool isLeft = false, string prefix = "")
+    stringstream printTree(shared_ptr<TreapNode> node, int rootIndex = 1, bool isLeft = false, string prefix = "")
     {
         stringstream ss;
         if (!node)
         {
-            ss << prefix<<"#"<<to_string(rootIndex) << "-> |()" << endl;
+            ss << prefix << "#" << to_string(rootIndex) << "-> |()" << endl;
             return ss;
         }
-        ss << prefix+"#"+  to_string(rootIndex)+(isLeft ? "-> " : "-> ")  << "Tree : " << node->toString()<<endl;
+        ss << prefix + "#" + to_string(rootIndex) + (isLeft ? "-> " : "-> ") << "Node = " << node->toString() << endl;
 
-        ss << pt(node->leftChild, rootIndex << 1, true, prefix + unitPrefix).str();
-        ss << pt(node->rightChild, (rootIndex << 1) + 1, false, prefix + unitPrefix).str();
+        ss << printTree(node->leftChild, rootIndex << 1, true, prefix + unitPrefix).str();
+        ss << printTree(node->rightChild, (rootIndex << 1) + 1, false, prefix + unitPrefix).str();
         return ss;
     }
 };
@@ -260,7 +257,7 @@ int main()
     // int kthMin = cartesianTree.find_kth_minimum_number_interval(2, 5, 2);
 
     // cout << "answer : " << kthMin << endl;
-    cout << cartesianTree.pt(cartesianTree.getRoot()).str() << endl;
+   // cout << cartesianTree.printTree(cartesianTree.getRoot()).str() << endl;
 
     return 0;
 }
