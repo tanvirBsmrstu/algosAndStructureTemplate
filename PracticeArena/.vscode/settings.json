@@ -1,0 +1,15 @@
+{
+    "editor.fontSize": 16,
+    "editor.tabSize": 8,
+    "files.exclude": {
+        "**/*.exe": true
+    },
+    "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+    "editor.codeActionsOnSave": {
+    "source.fixAll": true
+    },
+    "editor.defaultFormatter": "ms-vscode.cpptools-extension-pack",
+    "editor.foldingImportsByDefault": true,
+    "editor.inlayHints.fontSize": 0,
+    "editor.mouseWheelZoom": true
+}
