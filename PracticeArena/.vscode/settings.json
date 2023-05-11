@@ -15,5 +15,11 @@
     },
     "code-runner.saveAllFilesBeforeRun": false,
     "code-runner.saveFileBeforeRun": true,
-    "code-runner.clearPreviousOutput": true
+    "code-runner.clearPreviousOutput": true,
+    "files.associations": {
+        "memory": "cpp",
+        "vector": "cpp",
+        "iosfwd": "cpp",
+        "ostream": "cpp"
+    }
 }

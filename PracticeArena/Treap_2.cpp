@@ -3,6 +3,10 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <stack>
+#include <sstream>
+#include <iomanip>
+#include <ios>
 
 using namespace std;
 
@@ -56,6 +60,7 @@ class Treap
 public:
     Treap()
     {
+        // treeDepthLevel.resize(15);
     }
     shared_ptr<TreapNode> getRoot()
     {
@@ -218,7 +223,32 @@ public:
     {
         cleanup(root);
     }
+    stack<vector<shared_ptr<TreapNode>>> treeDepthLevel;
+    string unitPrefix = "       ";
+    stringstream pt(shared_ptr<TreapNode> node, int rootIndex = 1, bool isLeft = false, string prefix = "")
+    {
+        stringstream ss;
+        if (!node)
+        {
+            ss << prefix<<"#"<<to_string(rootIndex) << "-> |()" << endl;
+            return ss;
+        }
+        ss << prefix+"#"+  to_string(rootIndex)+(isLeft ? "-> " : "-> ")  << "Tree : " << node->toString()<<endl;
+
+        ss << pt(node->leftChild, rootIndex << 1, true, prefix + unitPrefix).str();
+        ss << pt(node->rightChild, (rootIndex << 1) + 1, false, prefix + unitPrefix).str();
+        return ss;
+    }
 };
+// void consolept(){
+//     int rootIndex = 1;
+//     for(int i=1;i<treeDepthLevel[i].size(); i++){
+//         for(auto x:v){
+//             cout << "index : " << rootIndex<< " Tree : " << x->toString()<<" |  ";
+//         }
+//         rootIndex *=2;
+//     }
+// }
 
 int main()
 {
@@ -230,6 +260,7 @@ int main()
     // int kthMin = cartesianTree.find_kth_minimum_number_interval(2, 5, 2);
 
     // cout << "answer : " << kthMin << endl;
+    cout << cartesianTree.pt(cartesianTree.getRoot()).str() << endl;
 
     return 0;
 }
