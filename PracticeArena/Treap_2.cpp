@@ -3,12 +3,42 @@
 #include <string>
 #include <memory>
 #include <vector>
-#include <stack>
 #include <sstream>
-#include <iomanip>
-#include <ios>
 
 using namespace std;
+
+#pragma region TreeDebug
+template <typename T>
+class TreeDebug
+{
+public:
+    /// @brief prints the tree to the console in NLR order
+    /// @param node must have a toString() method
+    /// @param rootIndex
+    /// @param prefix
+    /// @return
+    static stringstream debugTree(shared_ptr<T> node, int rootIndex = 1, string prefix = "")
+    {
+        stringstream ss;
+        string unitPrefix = "       ";
+        if (!node)
+        {
+            ss << prefix << "#" << to_string(rootIndex) << "-> |()" << endl;
+            return ss;
+        }
+        ss << prefix + "#" + to_string(rootIndex) + (rootIndex & 1 ? "_R-> " : "_L-> ") << "Node = " << node->toString() << endl;
+
+        ss << debugTree(node->leftChild, rootIndex << 1, prefix + unitPrefix).str();
+        ss << debugTree(node->rightChild, (rootIndex << 1) + 1, prefix + unitPrefix).str();
+        return ss;
+    }
+};
+
+#pragma endregion TreeDebug
+
+////////////////////////////////////////// Treap starts Here //////////////////////////////////////////////////////
+
+#pragma region ImplicitTreap
 
 constexpr const size_t mod = 10000007;
 
@@ -58,56 +88,7 @@ class Treap
     }
 
 public:
-    Treap()
-    {
-        // treeDepthLevel.resize(15);
-    }
-    shared_ptr<TreapNode> getRoot()
-    {
-        return root;
-    }
-    void insert(int val, int pos)
-    {
-        shared_ptr<TreapNode> newNode = make_shared<TreapNode>(pos, nullptr, nullptr, val);
-
-        shared_ptr<TreapNode> left = nullptr, right = nullptr;
-        cout << "++++++++++++++++++++++++++++++++++++++++++++++" << endl;
-
-        split(val, root, left, right);
-        if (left)
-        {
-            cout << "left tree ================" << endl;
-            print(left);
-            cout << " left end tree ************" << endl;
-        }
-        if (right)
-        {
-            cout << " right tree ================" << endl;
-            print(right);
-            cout << " right tree end************" << endl;
-        }
-        // if (left)
-        // {
-        //     cout << val << "       left : " << left->toString() << endl;
-        //     print(left);
-        //     cout << "***" << endl;
-        // }
-        // if (right)
-        //     cout << val << "       right : " << right->toString() << endl;
-        // if (root)
-        //     cout << val << "       one root : " << root->toString() << endl;
-        // cout << "________" << endl;
-        // // shared_ptr<TreapNode> dd = merge(left, newNode);
-        // // cout << val << "       merge : " << dd->toString() << endl;
-        // // print(dd);
-        // // cout << "________" << endl;
-
-        root = merge(merge(left, newNode), right);
-        // root->recalculateSize();
-        cout << " root tree ================" << endl;
-        print(root);
-        cout << " root tree end************" << endl;
-    }
+    Treap() = default;
 
     size_t getSubTreeSize(shared_ptr<TreapNode> node)
     {
@@ -122,7 +103,7 @@ public:
             return;
         }
 
-        int currentIndex = getSubTreeSize(node->leftChild);
+        int currentIndex = getSubTreeSize(node->leftChild) + 1;
         if (key < currentIndex)
         { /// search left subtree according to BST
             right = node;
@@ -160,10 +141,35 @@ public:
         }
     }
 
-    void print(shared_ptr<TreapNode> node, int rootIndex = 1)
+    ////////////////////////////// Core Treap ends here ///////////////////////////////////////////////////////////////////////
+
+    void insert(int pos, int val)
+    {
+        shared_ptr<TreapNode> newNode = make_shared<TreapNode>(pos, nullptr, nullptr, val); /// 0-based Index
+        shared_ptr<TreapNode> left = nullptr, right = nullptr;
+
+        split(pos, root, left, right);
+        root = merge(merge(left, newNode), right);
+    }
+
+    void build(vector<int> &array)
+    {
+        for (int i = 0; i < array.size(); i++)
+        {
+            insert(i, array[i]);
+        }
+    }
+
+    void remove(int low, int high)
     {
 
-        cout << printTree(node).str() << endl;
+        shared_ptr<TreapNode> left = nullptr, right = nullptr, intervalTree = nullptr;
+        split(low, root, left, right);
+        int intervalLength = high - low + 1;
+        split(intervalLength, right, intervalTree, right);
+        root = merge(left, right);
+
+        print(root, "New tree after removal");
     }
 
     int find_kth_minimum_number_interval(int low, int high, int k)
@@ -205,47 +211,26 @@ public:
         }
     }
 
-    void build(vector<int> &array)
+    void print(shared_ptr<TreapNode> node, string blockEnding = "This block")
     {
-        for (int i = 0; i < array.size(); i++)
-        {
-            insert(array[i], i);
-        }
-        cout << "########################" << endl;
-        print(root);
-        cout << "________" << endl;
+        cout << "----------------  " + blockEnding + "  ---- Starts Here-----------" << endl;
+        cout << TreeDebug<TreapNode>::debugTree(node).str() << endl;
+        cout << "----------------  " + blockEnding + "  ---- Ends Here-----------" << endl;
+    }
+
+    shared_ptr<TreapNode> getRoot()
+    {
+        return root;
     }
 
     ~Treap()
     {
         cleanup(root);
     }
-    stack<vector<shared_ptr<TreapNode>>> treeDepthLevel;
-    string unitPrefix = "       ";
-    stringstream printTree(shared_ptr<TreapNode> node, int rootIndex = 1, bool isLeft = false, string prefix = "")
-    {
-        stringstream ss;
-        if (!node)
-        {
-            ss << prefix << "#" << to_string(rootIndex) << "-> |()" << endl;
-            return ss;
-        }
-        ss << prefix + "#" + to_string(rootIndex) + (isLeft ? "-> " : "-> ") << "Node = " << node->toString() << endl;
-
-        ss << printTree(node->leftChild, rootIndex << 1, true, prefix + unitPrefix).str();
-        ss << printTree(node->rightChild, (rootIndex << 1) + 1, false, prefix + unitPrefix).str();
-        return ss;
-    }
 };
-// void consolept(){
-//     int rootIndex = 1;
-//     for(int i=1;i<treeDepthLevel[i].size(); i++){
-//         for(auto x:v){
-//             cout << "index : " << rootIndex<< " Tree : " << x->toString()<<" |  ";
-//         }
-//         rootIndex *=2;
-//     }
-// }
+
+#pragma endregion ImplicitTreap
+/////////////////// Treap ends Here ////////////////////////////////////////////////////////////////////////////////////////
 
 int main()
 {
@@ -253,11 +238,13 @@ int main()
 
     Treap cartesianTree;
     cartesianTree.build(input);
+    cout << "########################" << endl;
+    cartesianTree.remove(2, 4);
 
     // int kthMin = cartesianTree.find_kth_minimum_number_interval(2, 5, 2);
 
     // cout << "answer : " << kthMin << endl;
-   // cout << cartesianTree.printTree(cartesianTree.getRoot()).str() << endl;
+    // cout << cartesianTree.printTree(cartesianTree.getRoot()).str() << endl;
 
     return 0;
 }
