@@ -35,16 +35,10 @@ void build_SpTable(size_t n) /// assuming spTable[0][...] contains the original 
 
 int query(int low, int high) /// inclusive range, 0-based index
 {
-        int len = high - low + 1;
-        int answer = 1 << 31;
-        for (int i = LOG; i >= 0; i--)
-        {
-                if (len & (1 << i))
-                {
-                        answer = f(answer, spTable[i][low]);
-                        low += (1 << i);
-                }
-        }
+        int k = 0, len = high - low + 1;
+        while (len >>= 1)
+                k++;
+        int answer = f(spTable[k][low], spTable[k][high - (1 << k) + 1]); // There will be overlap but it is not harmful as the operation is max(l,r)
         return answer;
 }
 
