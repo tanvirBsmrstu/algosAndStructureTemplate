@@ -102,7 +102,7 @@ public:
                         if (comp_val == EQUAL)
                         {
                                 answer = mid;
-                                low = mid + 1;
+                                low = mid + 1; // go right
                         }
                         else if (comp_val == LEFT) // go left
                         {
@@ -126,7 +126,7 @@ public:
                         if (comp_val == EQUAL)
                         {
                                 answer = mid;
-                                high = mid - 1;
+                                high = mid - 1; // go left
                         }
                         else if (comp_val == LEFT) // go left
                         {
